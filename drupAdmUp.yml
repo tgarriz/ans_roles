@@ -1,0 +1,23 @@
+---
+- name: levanta un adm
+  hosts: 10.16.17.181
+  become: true
+
+  pre_tasks:
+    - debug:
+        msg: 'Empezando con la conf.'
+
+  roles:
+    - role: monitoreo_debian
+    - role: apache_php_admin
+      vars:
+        adm: drupadm.arba.gov.ar
+    - role: geerlingguy.composer
+    - role: geerlingguy.drush
+    - role: role_redis
+      vars:
+        ip: 10.16.1.63
+
+  post_tasks:
+    - debug: 
+        msg: 'Termino la conf. Revisar /var/www/ARBA/sites/default/settings.php cuando baje!'

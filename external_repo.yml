@@ -1,0 +1,7 @@
+---
+- name: configura repos externos
+  hosts: drupfront03.arba.gov.ar
+  become: true
+
+  roles: 
+    - role: external_repos

@@ -1,0 +1,22 @@
+---
+- name: levanta un front
+  hosts: drupfront03.arba.gov.ar
+  become: true
+
+  pre_tasks:
+    - debug:
+        msg: 'Empezando con la conf.'
+
+  roles:
+    - role: monitoreo_debian
+    - role: role-apache-php
+      vars:
+        front: drupfront03.arba.gov.ar
+    - role: role_varnish
+    - role: role_redis
+      vars:
+        ip: 10.16.1.66
+
+  post_tasks:
+    - debug:
+        msg: 'Termino la conf. Revisa /var/www/ARBA/sites/default/settings.php cuando baje'
