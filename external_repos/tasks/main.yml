@@ -1,0 +1,16 @@
+---
+# tasks file for external_repos
+- name: Copia script portalcautivo
+  copy:
+    src: portalcautivo.sh
+    dest: /usr/local/bin/portalcautivo.sh
+    mode: '755'
+    owner: root
+    group: root
+
+- name: Copia source.list
+  copy:
+    src: sources.list
+    dest: /etc/apt/sources.list
+    owner: root
+    group: root

@@ -1,0 +1,7 @@
+---
+# handlers file for installTsmClient
+- name: Restart dsmcad
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: dsmcad.service

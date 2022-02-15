@@ -1,0 +1,11 @@
+---
+# handlers file for apache_php_admin
+- name: Restart php7.3-fpm
+  service:
+    name: php7.3-fpm
+    state: restarted
+
+- name: Restart apache
+  service:
+    name: apache2
+    state: restarted

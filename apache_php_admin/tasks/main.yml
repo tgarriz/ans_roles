@@ -1,0 +1,97 @@
+---
+# tasks file for apache_php_admin
+- name: Instala apache, utilidades, php7.3 y librerias requeridas
+  apt:
+    name: 
+      - apache2  
+      - libapache2-mod-fcgid
+      - php7.3
+      - php-fpm
+      - php7.3-opcache 
+      - php-cgi 
+      - libapache2-mod-security2 
+      - php-dev 
+      - php-pear 
+      - make 
+      - php-redis 
+      - php-gd 
+      - php-mbstring 
+      - php-curl 
+      - php-mysql 
+      - libapache2-mod-php 
+      - rsync
+      - curl 
+      - wget 
+      - nmap 
+      - redis 
+    state: present
+
+- name: Enable the Apache2 module rewrite
+  community.general.apache2_module:
+    state: present
+    name: rewrite
+
+- name: Enable the Apache2 module proxy
+  community.general.apache2_module:
+    state: present
+    name: proxy
+
+- name: Enable the Apache2 module proxy_http
+  community.general.apache2_module:
+    state: present
+    name: proxy_http
+
+- name: Enable the Apache2 module proxy_fcgi
+  community.general.apache2_module:
+    state: present
+    name: proxy_fcgi
+
+- name: Enable the Apache2 module fcgid
+  community.general.apache2_module:
+    state: present
+    name: fcgid
+
+- name: Enable the Apache2 module ssl
+  community.general.apache2_module:
+    state: present
+    name: ssl
+  notify:
+    - Restart php7.3-fpm
+    - Restart apache
+
+- name: Create a directory ARBA if it does not exist 
+  file:
+    path: /var/www/ARBA
+    state: directory
+    mode: '0755'
+
+- name: Copiando llaves ssl
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+  with_items:
+    - { src: 'arbagovar.crt', dest: '/etc/ssl/private/arbagovar.crt' }
+    - { src: 'arbagovar.key', dest: '/etc/ssl/private/arbagovar.key' }
+    
+- name: Copiando virtualhost
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: '755'
+    owner: www-data
+    group: www-data
+  with_items:
+    - { src: 'drupadm-ssl.conf.j2', dest: '/etc/apache2/sites-available/drupadm-ssl.conf' }
+    - { src: 'drupadm.conf.j2', dest: '/etc/apache2/sites-available/drupadm.conf' }
+
+- name: a2ensite drupadm-ssl.conf
+  command: a2ensite drupadm-ssl.conf
+  notify:
+  - Restart apache
+
+- name: a2ensite drupadm.conf
+  command: a2ensite drupadm.conf
+  notify:
+  - Restart apache
