@@ -1,0 +1,31 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint: |
+  set -e
+  yamllint .
+  ansible-lint
+  flake8
+platforms:
+  - name: instance_buster
+    image: docker.io/buster:latest
+    pre_build_image: true
+    command: /sbin/init
+    tmpfs:
+      - /run
+      - /tmp
+    capabilities:
+    - SYS_ADMIN
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+
+  #- name: instance_ubuntu
+  #  image: docker.io/pycontribs/ubuntu:latest
+   # pre_build_image: true
+
+provisioner:
+  name: ansible
+verifier:
+  name: ansible

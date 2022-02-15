@@ -1,0 +1,4 @@
+---
+# vars file for role_redis
+bindredis: bind 127.0.0.1 ::1 {{ ip }}
+passredis: requirepass ClaveSegura

@@ -1,0 +1,19 @@
+---
+# tasks file for role_redis
+  - name: Instala y configura varnish y redis
+    apt:
+      name:
+      - redis
+
+  - replace:
+      path: /etc/redis/redis.conf
+      regexp: '^bind 127\.0\.0\.1 ::1$'
+      replace: "{{ bindredis }}"
+      backup: yes
+
+  - lineinfile:
+      path: /etc/redis/redis.conf
+      line: "{{ passredis }}"
+      insertafter: "{{ bindredis }}"
+    
+    notify: Restart redis
